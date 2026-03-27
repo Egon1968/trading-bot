@@ -1,0 +1,33 @@
+name: EMA/RSI Trading Bot
+
+on:
+  # Täglich um 15:30 Uhr (Börseneröffnung NY) und 21:00 Uhr (Börsenschluss)
+  # Nur Montag–Freitag (Handelstage)
+  schedule:
+    - cron: "30 15 * * 1-5"   # 15:30 UTC = Börseneröffnung New York
+    - cron: "0 21 * * 1-5"    # 21:00 UTC = kurz vor Börsenschluss NY
+  # Manueller Start über das GitHub-Interface (für Tests)
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    name: Trading Bot Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Abhängigkeiten installieren
+        run: pip install alpaca-py pandas numpy
+
+      - name: Trading Bot ausführen
+        env:
+          ALPACA_API_KEY:    ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+        run: python bot.py
