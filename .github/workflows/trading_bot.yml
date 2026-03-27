@@ -24,7 +24,7 @@ jobs:
           python-version: "3.11"
 
       - name: Abhängigkeiten installieren
-        run: pip install alpaca-py pandas numpy
+        run: pip install -r requirements.txt
 
       - name: Trading Bot ausführen
         env:
